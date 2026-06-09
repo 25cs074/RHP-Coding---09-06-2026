@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int dfs(vector<vector<int>>& matrix, vector<vector<int>>& dp, int i, int j) {
+    if (dp[i][j] != 0)
+        return dp[i][j];
+
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+
+    int dir[4][2] = {{-1,0},{1,0},{0,-1},{0,1}};
+    int ans = 1;
+
+    for (int k = 0; k < 4; k++) {
+        int ni = i + dir[k][0];
+        int nj = j + dir[k][1];
+
+        if (ni >= 0 && nj >= 0 && ni < rows && nj < cols &&
+            matrix[ni][nj] > matrix[i][j]) {
+            ans = max(ans, 1 + dfs(matrix, dp, ni, nj));
+        }
+    }
+
+    return dp[i][j] = ans;
+}
+
+int longestIncreasingPath(vector<vector<int>>& matrix) {
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+
+    vector<vector<int>> dp(rows, vector<int>(cols, 0));
+    int result = 0;
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            result = max(result, dfs(matrix, dp, i, j));
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    vector<vector<int>> matrix = {
+        {9, 9, 4},
+        {6, 6, 8},
+        {2, 1, 1}
+    };
+
+    cout << longestIncreasingPath(matrix);
+
+    return 0;
+}
